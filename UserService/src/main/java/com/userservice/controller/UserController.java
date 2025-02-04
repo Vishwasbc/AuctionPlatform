@@ -42,7 +42,7 @@ public class UserController {
 	public ResponseEntity<User> update(@PathVariable String userName, @RequestBody User user) {
 		return ResponseEntity.ok(userService.updateUser(userName, user));
 	}
-
+	//for Bid Communication
 	@GetMapping("/{userName}")
 	public UserDTO getByUserName(@PathVariable String userName) {
 		return userService.getByUserName(userName);

@@ -50,6 +50,7 @@ public class UserServiceImpementation implements UserService {
 		existingUser.setContactNo(user.getContactNo());
 		existingUser.setBirthDate(user.getBirthDate());
 		existingUser.setGender(user.getGender());
+		existingUser.setRole(user.getRole());
 
 		return userRepository.save(existingUser);
 	}
