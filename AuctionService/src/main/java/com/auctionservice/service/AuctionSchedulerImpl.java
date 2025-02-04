@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 public class AuctionSchedulerImpl implements AuctionScheduler {
 	private AuctionRepository auctionRepository;
 	@Override
-	@Scheduled(fixedRate = 60000)//Runs Every Minute
+	@Scheduled(fixedRate = 10000)//Runs Every Second
 	public void startAuctions() {
 		List<Auction> upcomingAuctions=auctionRepository.findByStatus(AuctionStatus.UPCOMING);
 		LocalDateTime now=LocalDateTime.now();
@@ -29,15 +29,16 @@ public class AuctionSchedulerImpl implements AuctionScheduler {
 		}
 	}
 	@Override
-	@Scheduled(fixedRate=60000)
-	public void endAuctions() {
-	    List<Auction> ongoingAuctions = auctionRepository.findByStatus(AuctionStatus.LIVE);
-	    LocalDateTime now = LocalDateTime.now();
-	    for(Auction auction : ongoingAuctions) {
-	        if(auction.getEndDate().isBefore(now)) {
-	            auction.setStatus(AuctionStatus.ENDED);
-	            auctionRepository.save(auction);
-	        }
-	    }
-	}
+    @Scheduled(fixedRate = 10000) // Runs every second
+    public void endAuctions() {
+        List<Auction> ongoingAuctions = auctionRepository.findByStatus(AuctionStatus.LIVE);
+        LocalDateTime now = LocalDateTime.now();
+        for (Auction auction : ongoingAuctions) {
+            if (auction.getEndDate().isBefore(now)) {
+                auction.setStatus(AuctionStatus.ENDED);
+                auctionRepository.save(auction);
+                System.out.println("Auction"+auction.getAuctionId()+"ended at"+ now);
+            }
+        }
+    }
 }

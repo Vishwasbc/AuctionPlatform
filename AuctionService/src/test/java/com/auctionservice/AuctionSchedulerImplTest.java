@@ -1,5 +1,6 @@
 package com.auctionservice;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,44 +33,43 @@ public class AuctionSchedulerImplTest {
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 	}
-
 	@Test
-	public void testStartAuctions() {
-		Auction auction1 = new Auction();
-		auction1.setStatus(AuctionStatus.UPCOMING);
-		auction1.setStartDate(LocalDateTime.now().minusMinutes(1));
+    public void testStartAuctions() {
+        // Arrange
+        LocalDateTime now = LocalDateTime.now();
+        Auction auction1 = new Auction(1, 101, "Item 1", "Seller 1", now.minusDays(2), now.plusDays(1), 50.0, 75.0, 5.0, AuctionStatus.UPCOMING);
+        Auction auction2 = new Auction(2, 102, "Item 2", "Seller 2", now.minusHours(1), now.plusHours(1), 100.0, 150.0, 10.0, AuctionStatus.UPCOMING);
+        List<Auction> upcomingAuctions = Arrays.asList(auction1, auction2);
 
-		Auction auction2 = new Auction();
-		auction2.setStatus(AuctionStatus.UPCOMING);
-		auction2.setStartDate(LocalDateTime.now().plusMinutes(1));
+        when(auctionRepository.findByStatus(AuctionStatus.UPCOMING)).thenReturn(upcomingAuctions);
 
-		List<Auction> upcomingAuctions = Arrays.asList(auction1, auction2);
+        // Act
+        auctionScheduler.startAuctions();
 
-		when(auctionRepository.findByStatus(AuctionStatus.UPCOMING)).thenReturn(upcomingAuctions);
-
-		auctionScheduler.startAuctions();
-
-		verify(auctionRepository, times(1)).save(auction1);
-		verify(auctionRepository, never()).save(auction2);
-	}
-
+        // Assert
+        assertEquals(AuctionStatus.LIVE, auction1.getStatus());
+        assertEquals(AuctionStatus.LIVE, auction2.getStatus());
+        verify(auctionRepository, times(1)).save(auction1);
+        verify(auctionRepository, times(1)).save(auction2);
+    }
 	@Test
 	public void testEndAuctions() {
-		Auction auction1 = new Auction();
-		auction1.setStatus(AuctionStatus.LIVE);
-		auction1.setEndDate(LocalDateTime.now().minusMinutes(1));
+        // Arrange
+        LocalDateTime now = LocalDateTime.now();
+        Auction auction1 = new Auction(1, 101, "Item 1", "Seller 1", now.minusDays(2), now.minusDays(1), 50.0, 75.0, 5.0, AuctionStatus.LIVE);
+        Auction auction2 = new Auction(2, 102, "Item 2", "Seller 2", now.minusDays(1), now.minusHours(1), 100.0, 150.0, 10.0, AuctionStatus.LIVE);
+        List<Auction> ongoingAuctions = Arrays.asList(auction1, auction2);
 
-		Auction auction2 = new Auction();
-		auction2.setStatus(AuctionStatus.LIVE);
-		auction2.setEndDate(LocalDateTime.now().plusMinutes(1));
+        when(auctionRepository.findByStatus(AuctionStatus.LIVE)).thenReturn(ongoingAuctions);
 
-		List<Auction> ongoingAuctions = Arrays.asList(auction1, auction2);
+        // Act
+        auctionScheduler.endAuctions();
 
-		when(auctionRepository.findByStatus(AuctionStatus.LIVE)).thenReturn(ongoingAuctions);
+        // Assert
+        assertEquals(AuctionStatus.ENDED, auction1.getStatus());
+        assertEquals(AuctionStatus.ENDED, auction2.getStatus());
+        verify(auctionRepository, times(1)).save(auction1);
+        verify(auctionRepository, times(1)).save(auction2);
+    }
 
-		auctionScheduler.endAuctions();
-
-		verify(auctionRepository, times(1)).save(auction1);
-		verify(auctionRepository, never()).save(auction2);
-	}
 }

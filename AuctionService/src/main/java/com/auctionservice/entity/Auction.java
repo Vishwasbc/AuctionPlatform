@@ -38,5 +38,5 @@ public class Auction {
 	private double minBidAmount;
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private AuctionStatus status=AuctionStatus.UPCOMING;
+	private AuctionStatus status=AuctionStatus.DEFAULT;
 }
