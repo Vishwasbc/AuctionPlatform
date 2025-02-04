@@ -62,7 +62,6 @@ public class UserServiceImpementation implements UserService {
 		userDTO.setFirstName(user.getFirstName());
 		userDTO.setLastName(user.getLastName());
 		userDTO.setEmail(user.getEmail());
-		userDTO.setRole(user.getRole());
 		return userDTO;
 	}
 

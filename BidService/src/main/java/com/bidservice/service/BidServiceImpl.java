@@ -15,10 +15,8 @@ import com.bidservice.feign.UserClient;
 import com.bidservice.repository.BidRepository;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @Service
-@NoArgsConstructor
 @AllArgsConstructor
 public class BidServiceImpl implements BidService {
     private BidRepository bidRepository;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.auctionservice.DTO.AuctionDTO;
 import com.auctionservice.entity.Auction;
 import com.auctionservice.entity.AuctionStatus;
 import com.auctionservice.exception.AuctionNotFound;
@@ -77,6 +78,23 @@ public class AuctionSerivceImpl implements AuctionService {
 		existingAuction.setStatus(AuctionStatus.LIVE);
 		auctionRepository.save(existingAuction);
 		return "Auction Started";
+	}
+
+	@Override
+	public AuctionDTO getByAuctionId(int id) {
+		Auction auction = auctionRepository.findById(id)
+				.orElseThrow(() -> new AuctionNotFound("Auction does not exist"));
+		AuctionDTO auctionDTO = new AuctionDTO();
+		auctionDTO.setAuctionId(auction.getAuctionId());
+		auctionDTO.setProductId(auction.getProductId());
+		auctionDTO.setDescription(auction.getDescription());
+		auctionDTO.setSellerName(auction.getSellerName());
+		auctionDTO.setStartDate(auction.getStartDate());
+		auctionDTO.setEndDate(auction.getEndDate());
+		auctionDTO.setStartPrice(auction.getStartPrice());
+		auctionDTO.setCurrentHighestBid(auction.getCurrentHighestBid());
+		auctionDTO.setMinBidAmount(auction.getMinBidAmount());
+		return auctionDTO;
 	}
 	
 
