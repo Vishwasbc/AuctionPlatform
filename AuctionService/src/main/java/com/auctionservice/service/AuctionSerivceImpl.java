@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.auctionservice.DTO.AuctionDTO;
+import com.auctionservice.dto.AuctionDTO;
+import com.auctionservice.dto.ProductDTO;
 import com.auctionservice.entity.Auction;
 import com.auctionservice.entity.AuctionStatus;
 import com.auctionservice.exception.AuctionNotFound;
+import com.auctionservice.feign.ProductClient;
 import com.auctionservice.repository.AuctionRepository;
 
 import lombok.AllArgsConstructor;
@@ -16,9 +18,11 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuctionSerivceImpl implements AuctionService {
 	private AuctionRepository auctionRepository;
+	private ProductClient productClient;
 
 	@Override
 	public String createAuction(Auction auction) {
+		ProductDTO product=productClient.getByProductId(auction.getProductId());
 		auctionRepository.save(auction);
 		return "Auction Created";
 	}
@@ -55,11 +59,6 @@ public class AuctionSerivceImpl implements AuctionService {
 	public String deleteAuction(int id) {
 		auctionRepository.deleteById(id);
 		return "Auction Successfully Deleted";
-	}
-
-	@Override
-	public List<Auction> getAuctionBySeller(String name) {
-		return auctionRepository.findBySellerName(name);
 	}
 
 	@Override

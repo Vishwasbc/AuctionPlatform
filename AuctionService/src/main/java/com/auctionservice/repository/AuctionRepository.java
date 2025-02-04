@@ -10,6 +10,5 @@ import com.auctionservice.entity.AuctionStatus;
 public interface AuctionRepository extends JpaRepository<Auction, Integer>{
 
 	List<Auction> findByStatus(AuctionStatus upcoming);
-	List<Auction> findBySellerName(String sellerName);
 
 }

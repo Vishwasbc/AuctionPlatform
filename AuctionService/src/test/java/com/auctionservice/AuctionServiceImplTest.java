@@ -35,7 +35,7 @@ class AuctionServiceImplTest {
 	private AuctionRepository auctionRepository;
 
 	@InjectMocks
-	private  AuctionSerivceImpl auctionService;
+	private AuctionSerivceImpl auctionService;
 
 	private Auction auction;
 
@@ -114,16 +114,6 @@ class AuctionServiceImplTest {
 	}
 
 	@Test
-	void testGetAuctionBySeller() {
-	    when(auctionRepository.findBySellerName("John Doe")).thenReturn(Arrays.asList(auction));
-	    List<Auction> auctions = auctionService.getAuctionBySeller("John Doe");
-	    assertNotNull(auctions);
-	    assertEquals(1, auctions.size());
-	    verify(auctionRepository, times(1)).findBySellerName("John Doe");
-	}
-
-
-	@Test
 	void testEndAuction() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
 		auction.setStatus(AuctionStatus.LIVE);
@@ -138,23 +128,21 @@ class AuctionServiceImplTest {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.empty());
 		assertThrows(AuctionNotFound.class, () -> auctionService.endAuction(1));
 	}
-	
+
 	@Test
-    void testStartAuction() {
-        when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
+	void testStartAuction() {
+		when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
 
-        String result = auctionService.startAuction(1);
-        assertEquals("Auction Started", result); 
-        assertEquals(AuctionStatus.LIVE, auction.getStatus());
-        verify(auctionRepository, times(1)).findById(1);
-        verify(auctionRepository, times(1)).save(auction);
-    }
-
+		String result = auctionService.startAuction(1);
+		assertEquals("Auction Started", result);
+		assertEquals(AuctionStatus.LIVE, auction.getStatus());
+		verify(auctionRepository, times(1)).findById(1);
+		verify(auctionRepository, times(1)).save(auction);
+	}
 
 	@Test
 	void testStartAuctionNotFound() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.empty());
-
 		assertThrows(AuctionNotFound.class, () -> auctionService.startAuction(1));
 		verify(auctionRepository, times(1)).findById(1);
 		verify(auctionRepository, times(0)).save(any(Auction.class));

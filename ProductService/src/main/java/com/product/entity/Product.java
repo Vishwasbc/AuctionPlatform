@@ -24,5 +24,5 @@ public class Product {
 	@NotNull
 	private double price;
 	@NotNull
-	private int sellerId;
+	private String sellerName;
 }

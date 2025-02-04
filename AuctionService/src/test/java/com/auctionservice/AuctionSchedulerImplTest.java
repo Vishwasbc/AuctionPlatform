@@ -1,7 +1,6 @@
 package com.auctionservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,13 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.auctionservice.entity.Auction;
 import com.auctionservice.entity.AuctionStatus;
 import com.auctionservice.repository.AuctionRepository;
 import com.auctionservice.service.AuctionSchedulerImpl;
 
-public class AuctionSchedulerImplTest {
+@SpringBootTest
+class AuctionSchedulerImplTest {
 
 	@Mock
 	private AuctionRepository auctionRepository;
@@ -34,7 +35,7 @@ public class AuctionSchedulerImplTest {
 		MockitoAnnotations.openMocks(this);
 	}
 	@Test
-    public void testStartAuctions() {
+    void testStartAuctions() {
         // Arrange
         LocalDateTime now = LocalDateTime.now();
         Auction auction1 = new Auction(1, 101, "Item 1", "Seller 1", now.minusDays(2), now.plusDays(1), 50.0, 75.0, 5.0, AuctionStatus.UPCOMING);
@@ -53,7 +54,7 @@ public class AuctionSchedulerImplTest {
         verify(auctionRepository, times(1)).save(auction2);
     }
 	@Test
-	public void testEndAuctions() {
+	void testEndAuctions() {
         // Arrange
         LocalDateTime now = LocalDateTime.now();
         Auction auction1 = new Auction(1, 101, "Item 1", "Seller 1", now.minusDays(2), now.minusDays(1), 50.0, 75.0, 5.0, AuctionStatus.LIVE);

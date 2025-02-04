@@ -2,7 +2,7 @@ package com.auctionservice.service;
 
 import java.util.List;
 
-import com.auctionservice.DTO.AuctionDTO;
+import com.auctionservice.dto.AuctionDTO;
 import com.auctionservice.entity.Auction;
 
 public interface AuctionService {
@@ -15,8 +15,6 @@ public interface AuctionService {
 	Auction getAuctionById(int id);
 
 	String deleteAuction(int id);
-
-	List<Auction> getAuctionBySeller(String name);
 
 	String endAuction(int id);
 
