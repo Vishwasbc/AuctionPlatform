@@ -30,7 +30,7 @@ public class BidController {
 		return ResponseEntity.ok(bidService.getBidsByAuction(auctionId));
 	}
 	@GetMapping("/highest/{auctionId}")
-	public ResponseEntity<?> getHighestBid(@PathVariable int auctionId){
+	public ResponseEntity<Double> getHighestBid(@PathVariable int auctionId){
 		return ResponseEntity.ok(bidService.getHighestBid(auctionId));
 	}
 }

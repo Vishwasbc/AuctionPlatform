@@ -28,7 +28,8 @@ import com.auctionservice.exception.AuctionNotFound;
 import com.auctionservice.repository.AuctionRepository;
 import com.auctionservice.service.AuctionSerivceImpl;
 
-public class AuctionServiceImplTest {
+@SpringBootTest
+class AuctionServiceImplTest {
 
 	@Mock
 	private AuctionRepository auctionRepository;
@@ -55,7 +56,7 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testCreateAuction() {
+	void testCreateAuction() {
 		when(auctionRepository.save(any(Auction.class))).thenReturn(auction);
 		String result = auctionService.createAuction(auction);
 		assertEquals("Auction Created", result);
@@ -63,7 +64,7 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateAuction() {
+	void testUpdateAuction() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
 		when(auctionRepository.save(any(Auction.class))).thenReturn(auction);
 
@@ -75,13 +76,13 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateAuctionNotFound() {
+	void testUpdateAuctionNotFound() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.empty());
 		assertThrows(AuctionNotFound.class, () -> auctionService.updateAuction(1, auction));
 	}
 
 	@Test
-	public void testGetAllAuction() {
+	void testGetAllAuction() {
 		when(auctionRepository.findAll()).thenReturn(Arrays.asList(auction));
 		List<Auction> auctions = auctionService.getAllAuction();
 		assertNotNull(auctions);
@@ -90,7 +91,7 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testGetAuctionById() {
+	void testGetAuctionById() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
 		Auction foundAuction = auctionService.getAuctionById(1);
 		assertNotNull(foundAuction);
@@ -99,13 +100,13 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testGetAuctionByIdNotFound() {
+	void testGetAuctionByIdNotFound() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.empty());
 		assertThrows(AuctionNotFound.class, () -> auctionService.getAuctionById(1));
 	}
 
 	@Test
-	public void testDeleteAuction() {
+	void testDeleteAuction() {
 		doNothing().when(auctionRepository).deleteById(anyInt());
 		String result = auctionService.deleteAuction(1);
 		assertEquals("Auction Successfully Deleted", result);
@@ -113,7 +114,7 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testGetAuctionBySeller() {
+	void testGetAuctionBySeller() {
 		when(auctionRepository.findBySellerId(anyInt())).thenReturn(Arrays.asList(auction));
 		List<Auction> auctions = auctionService.getAuctionBySeller(1001);
 		assertNotNull(auctions);
@@ -122,7 +123,7 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testEndAuction() {
+	void testEndAuction() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
 		auction.setStatus(AuctionStatus.LIVE);
 		String result = auctionService.endAuction(1);
@@ -132,13 +133,13 @@ public class AuctionServiceImplTest {
 	}
 
 	@Test
-	public void testEndAuctionNotFound() {
+	void testEndAuctionNotFound() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.empty());
 		assertThrows(AuctionNotFound.class, () -> auctionService.endAuction(1));
 	}
 	
 	@Test
-    public void testStartAuction() {
+    void testStartAuction() {
         when(auctionRepository.findById(anyInt())).thenReturn(Optional.of(auction));
 
         String result = auctionService.startAuction(1);
@@ -150,7 +151,7 @@ public class AuctionServiceImplTest {
 
 
 	@Test
-	public void testStartAuctionNotFound() {
+	void testStartAuctionNotFound() {
 		when(auctionRepository.findById(anyInt())).thenReturn(Optional.empty());
 
 		assertThrows(AuctionNotFound.class, () -> auctionService.startAuction(1));

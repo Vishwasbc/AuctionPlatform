@@ -47,7 +47,7 @@ public class AuctionSerivceImpl implements AuctionService {
 
 	@Override
 	public Auction getAuctionById(int id) {
-		return auctionRepository.findById(id).orElseThrow(() -> new AuctionNotFound("Auction does not exist"));
+		return auctionRepository.findById(id).orElseThrow(() -> new AuctionNotFound("Auction with id:"+id+" does not exist"));
 	}
 
 	@Override
