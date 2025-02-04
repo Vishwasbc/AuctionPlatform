@@ -29,7 +29,7 @@ public class AuctionSerivceImpl implements AuctionService {
 
 		existingAuction.setProductId(auction.getProductId());
 		existingAuction.setDescription(auction.getDescription());
-		existingAuction.setSellerId(auction.getSellerId());
+		existingAuction.setSellerName(auction.getSellerName());
 		existingAuction.setStartDate(auction.getStartDate());
 		existingAuction.setEndDate(auction.getEndDate());
 		existingAuction.setStartPrice(auction.getStartPrice());

@@ -26,7 +26,7 @@ public class Auction {
 	@NotNull
 	private String description;
 	@NotNull
-	private int sellerId;
+	private String sellerName;
 	@NotNull
 	private LocalDateTime startDate;
 	@NotNull

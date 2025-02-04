@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.auctionservice.entity.Auction;
 import com.auctionservice.entity.AuctionStatus;
@@ -44,7 +45,7 @@ public class AuctionServiceImplTest {
 		auction.setAuctionId(1);
 		auction.setProductId(101);
 		auction.setDescription("Test Auction");
-		auction.setSellerId(1001);
+		auction.setSellerName("Harish");
 		auction.setStartDate(LocalDateTime.now());
 		auction.setEndDate(LocalDateTime.now().plusDays(1));
 		auction.setStartPrice(100.0);
