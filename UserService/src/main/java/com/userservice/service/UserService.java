@@ -1,5 +1,6 @@
 package com.userservice.service;
 
+import com.userservice.DTO.UserDTO;
 import com.userservice.entity.User;
 
 public interface UserService {
@@ -11,5 +12,5 @@ public interface UserService {
 
 	User updateUser(String userName, User user);
 
-	User getByUserName(String userName);
+	UserDTO getByUserName(String userName);
 }

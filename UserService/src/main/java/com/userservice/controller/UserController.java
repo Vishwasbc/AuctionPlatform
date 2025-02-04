@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.userservice.DTO.UserDTO;
 import com.userservice.entity.User;
 import com.userservice.service.UserService;
 
@@ -43,7 +44,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{userName}")
-	public ResponseEntity<User> getByUserName(@PathVariable String userName) {
-		return ResponseEntity.ok(userService.getByUserName(userName));
+	public UserDTO getByUserName(@PathVariable String userName) {
+		return userService.getByUserName(userName);
 	}
 }

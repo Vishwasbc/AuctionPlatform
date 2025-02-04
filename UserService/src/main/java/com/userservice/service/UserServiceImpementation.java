@@ -1,12 +1,14 @@
 package com.userservice.service;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
+import com.userservice.DTO.UserDTO;
 import com.userservice.entity.User;
 import com.userservice.exception.IncorrectPasswordException;
 import com.userservice.exception.UserNotFoundException;
 import com.userservice.repository.UserRepository;
-import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 
@@ -53,8 +55,15 @@ public class UserServiceImpementation implements UserService {
 	}
 
 	@Override
-	public User getByUserName(String userName) {
-		return userRepository.findById(userName).orElseThrow(() -> new UserNotFoundException(userName+" not Found"));
+	public UserDTO getByUserName(String userName) {
+		User user = userRepository.findById(userName).orElseThrow(() -> new UserNotFoundException(userName+" not Found"));
+		UserDTO userDTO = new UserDTO();
+		userDTO.setUserName(user.getUserName());
+		userDTO.setFirstName(user.getFirstName());
+		userDTO.setLastName(user.getLastName());
+		userDTO.setEmail(user.getEmail());
+		userDTO.setRole(user.getRole());
+		return userDTO;
 	}
 
 }

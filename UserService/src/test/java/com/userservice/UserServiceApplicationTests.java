@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.userservice.DTO.UserDTO;
 import com.userservice.entity.Role;
 import com.userservice.entity.User;
 import com.userservice.exception.IncorrectPasswordException;
@@ -96,7 +97,7 @@ public class UserServiceApplicationTests {
 	@Test
 	public void testGetByUserName_Success() {
 		when(userRepository.findById("john_doe")).thenReturn(Optional.of(user));
-		User result = userService.getByUserName("john_doe");
+		UserDTO result = userService.getByUserName("john_doe");
 		assertEquals(user, result);
 	}
 

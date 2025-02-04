@@ -28,7 +28,7 @@ public class BidServiceImpl implements BidService {
 	@Override
 	public Bid placeBid(Bid bid) {
 		//validate Bidder
-		UserDto bidder = userClient.getUserByUsername(bid.getBidderName());
+		UserDto bidder = userClient.getByUserName(bid.getBidderName());
         if (bidder == null) {
             throw new InvalidBidderException("Invalid bidder: User not found");
         }

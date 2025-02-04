@@ -51,14 +51,13 @@ public class BidServiceApplicationTests {
         userDto.setFirstName("Test");
         userDto.setLastName("User");
         userDto.setEmail("testuser@example.com");
-        userDto.setContactNo("1234567890");
 
         AuctionDto auctionDto = new AuctionDto();
         auctionDto.setAuctionId(1);
         auctionDto.setCurrentHighestBid(50.0);
         auctionDto.setMinBidAmount(10.0);
 
-        when(userClient.getUserByUsername("testUser")).thenReturn(userDto);
+        when(userClient.getByUserName("testUser")).thenReturn(userDto);
         when(auctionClient.getAuctionById(1)).thenReturn(auctionDto);
         when(bidRepository.save(any(Bid.class))).thenReturn(bid);
 
@@ -77,7 +76,7 @@ public class BidServiceApplicationTests {
         bid.setAuctionId(1);
         bid.setBidAmount(100.0);
 
-        when(userClient.getUserByUsername("invalidUser")).thenReturn(null);
+        when(userClient.getByUserName("invalidUser")).thenReturn(null);
 
         assertThrows(InvalidBidderException.class, () -> bidService.placeBid(bid));
     }
@@ -94,9 +93,8 @@ public class BidServiceApplicationTests {
         userDto.setFirstName("Test");
         userDto.setLastName("User");
         userDto.setEmail("testuser@example.com");
-        userDto.setContactNo("1234567890");
 
-        when(userClient.getUserByUsername("testUser")).thenReturn(userDto);
+        when(userClient.getByUserName("testUser")).thenReturn(userDto);
         when(auctionClient.getAuctionById(1)).thenReturn(null);
 
         assertThrows(AuctionNotFoundException.class, () -> bidService.placeBid(bid));
@@ -114,14 +112,13 @@ public class BidServiceApplicationTests {
         userDto.setFirstName("Test");
         userDto.setLastName("User");
         userDto.setEmail("testuser@example.com");
-        userDto.setContactNo("1234567890");
 
         AuctionDto auctionDto = new AuctionDto();
         auctionDto.setAuctionId(1);
         auctionDto.setCurrentHighestBid(50.0);
         auctionDto.setMinBidAmount(10.0);
 
-        when(userClient.getUserByUsername("testUser")).thenReturn(userDto);
+        when(userClient.getByUserName("testUser")).thenReturn(userDto);
         when(auctionClient.getAuctionById(1)).thenReturn(auctionDto);
 
         assertThrows(InvalidBidAmountException.class, () -> bidService.placeBid(bid));
