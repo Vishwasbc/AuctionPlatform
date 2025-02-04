@@ -45,8 +45,8 @@ public class AuctionController {
 	}
 
 	@GetMapping("/seller")
-	public ResponseEntity<List<Auction>> getAuctionBySellerId(@RequestParam int id) {
-		return ResponseEntity.ok(auctionService.getAuctionBySeller(id));
+	public ResponseEntity<List<Auction>> getAuctionBySellerId(@RequestParam String name) {
+		return ResponseEntity.ok(auctionService.getAuctionBySeller(name));
 	}
 
 	@DeleteMapping("/delete/")

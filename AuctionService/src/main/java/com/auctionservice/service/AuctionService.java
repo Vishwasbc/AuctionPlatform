@@ -15,7 +15,7 @@ public interface AuctionService {
 
 	String deleteAuction(int id);
 
-	List<Auction> getAuctionBySeller(int id);
+	List<Auction> getAuctionBySeller(String name);
 
 	String endAuction(int id);
 

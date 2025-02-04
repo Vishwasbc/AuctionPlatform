@@ -57,8 +57,8 @@ public class AuctionSerivceImpl implements AuctionService {
 	}
 
 	@Override
-	public List<Auction> getAuctionBySeller(int id) {
-		return auctionRepository.findBySellerId(id);
+	public List<Auction> getAuctionBySeller(String name) {
+		return auctionRepository.findBySellerName(name);
 	}
 
 	@Override

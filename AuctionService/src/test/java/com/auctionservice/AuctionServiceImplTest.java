@@ -115,12 +115,13 @@ class AuctionServiceImplTest {
 
 	@Test
 	void testGetAuctionBySeller() {
-		when(auctionRepository.findBySellerId(anyInt())).thenReturn(Arrays.asList(auction));
-		List<Auction> auctions = auctionService.getAuctionBySeller(1001);
-		assertNotNull(auctions);
-		assertEquals(1, auctions.size());
-		verify(auctionRepository, times(1)).findBySellerId(1001);
+	    when(auctionRepository.findBySellerName("John Doe")).thenReturn(Arrays.asList(auction));
+	    List<Auction> auctions = auctionService.getAuctionBySeller("John Doe");
+	    assertNotNull(auctions);
+	    assertEquals(1, auctions.size());
+	    verify(auctionRepository, times(1)).findBySellerName("John Doe");
 	}
+
 
 	@Test
 	void testEndAuction() {
