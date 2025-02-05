@@ -42,4 +42,3 @@ public class LoggingAspect {
 		logger.error("Exception in {} with cause = {}", joinPoint.getSignature(), ex.getMessage());
 	}
 }
-

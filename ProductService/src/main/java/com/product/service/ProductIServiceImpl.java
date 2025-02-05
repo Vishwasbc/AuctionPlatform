@@ -65,7 +65,7 @@ public class ProductIServiceImpl implements ProductService {
 	public ProductDTO getByProductId(int id) {
 		Product product = productRepository.findById(id)
 				.orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + " not Found"));
-		ProductDTO productDTO= new ProductDTO();
+		ProductDTO productDTO = new ProductDTO();
 		productDTO.setProductId(product.getProductId());
 		productDTO.setProductName(product.getProductName());
 		productDTO.setProductDescription(product.getProductDescription());

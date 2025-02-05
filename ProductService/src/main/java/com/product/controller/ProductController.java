@@ -26,26 +26,32 @@ import lombok.AllArgsConstructor;
 public class ProductController {
 
 	private ProductService productService;
+
 	@GetMapping
-	public ResponseEntity<List<Product>> getAllProducts(){
+	public ResponseEntity<List<Product>> getAllProducts() {
 		return ResponseEntity.ok(productService.getAllProducts());
 	}
+
 	@GetMapping("/get")
-	public ResponseEntity<Product> getProduct(@RequestParam int id){
+	public ResponseEntity<Product> getProduct(@RequestParam int id) {
 		return ResponseEntity.ok(productService.getProductById(id));
 	}
+
 	@PostMapping
-	public ResponseEntity<Product> saveProduct(@RequestBody Product product){
-		return new ResponseEntity<>(productService.saveProduct(product),HttpStatus.CREATED);
+	public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
+		return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
 	}
+
 	@PutMapping
-	public ResponseEntity<Product> updateProduct(@RequestParam int id,@RequestBody Product product){
-		return ResponseEntity.ok(productService.updateProduct(id,product));
+	public ResponseEntity<Product> updateProduct(@RequestParam int id, @RequestBody Product product) {
+		return ResponseEntity.ok(productService.updateProduct(id, product));
 	}
+
 	@DeleteMapping
-	public ResponseEntity<String> deleteProduct(@RequestParam int id){
+	public ResponseEntity<String> deleteProduct(@RequestParam int id) {
 		return ResponseEntity.ok(productService.deleteProduct(id));
 	}
+
 	@GetMapping("{id}")
 	public ProductDTO getByProductId(@PathVariable int id) {
 		return productService.getByProductId(id);
