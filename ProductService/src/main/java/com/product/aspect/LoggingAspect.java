@@ -14,7 +14,7 @@ public class LoggingAspect {
 
 	// Pointcut to match all methods in the service, repository, and controller
 	// layers
-	@Pointcut("execution(* com.productservice..*(..))")
+	@Pointcut("execution(* com.product..*(..))")
 	public void applicationMethods() {
 	}
 
