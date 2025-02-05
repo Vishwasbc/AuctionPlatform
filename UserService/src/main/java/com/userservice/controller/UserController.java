@@ -18,33 +18,69 @@ import com.userservice.service.UserService;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Controller class for managing user-related operations.
+ */
 @RestController
 @RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
-	private UserService userService;
-	@GetMapping("/login")
-	public ResponseEntity<String> login(@RequestParam String userName, @RequestParam String password) {
-		return ResponseEntity.ok(userService.loginUser(userName, password));
-	}
+    private UserService userService;
 
-	@PostMapping("/register")
-	public ResponseEntity<User> register(@RequestBody User user) {
-		return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
-	}
+    /**
+     * Handles user login requests.
+     * 
+     * @param userName the username of the user
+     * @param password the password of the user
+     * @return a ResponseEntity containing the login status
+     */
+    @GetMapping("/login")
+    public ResponseEntity<String> login(@RequestParam String userName, @RequestParam String password) {
+        return ResponseEntity.ok(userService.loginUser(userName, password));
+    }
 
-	@DeleteMapping("/delete")
-	public ResponseEntity<String> delete(@RequestParam String userName) {
-		return ResponseEntity.ok(userService.deleteUser(userName));
-	}
+    /**
+     * Handles user registration requests.
+     * 
+     * @param user the user details to register
+     * @return a ResponseEntity containing the registered user and HTTP status CREATED
+     */
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+    }
 
-	@PutMapping("/update/{userName}")
-	public ResponseEntity<User> update(@PathVariable String userName, @RequestBody User user) {
-		return ResponseEntity.ok(userService.updateUser(userName, user));
-	}
-	//for Bid Communication
-	@GetMapping("/{userName}")
-	public UserDTO getByUserName(@PathVariable String userName) {
-		return userService.getByUserName(userName);
-	}
+    /**
+     * Handles user deletion requests.
+     * 
+     * @param userName the username of the user to delete
+     * @return a ResponseEntity containing the deletion status
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete(@RequestParam String userName) {
+        return ResponseEntity.ok(userService.deleteUser(userName));
+    }
+
+    /**
+     * Handles user update requests.
+     * 
+     * @param userName the username of the user to update
+     * @param user the updated user details
+     * @return a ResponseEntity containing the updated user
+     */
+    @PutMapping("/update/{userName}")
+    public ResponseEntity<User> update(@PathVariable String userName, @RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUser(userName, user));
+    }
+
+    /**
+     * Retrieves user details by username.
+     * 
+     * @param userName the username of the user to retrieve
+     * @return the user details as a UserDTO
+     */
+    @GetMapping("/{userName}")
+    public UserDTO getByUserName(@PathVariable String userName) {
+        return userService.getByUserName(userName);
+    }
 }

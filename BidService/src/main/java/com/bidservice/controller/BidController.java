@@ -16,22 +16,45 @@ import com.bidservice.service.BidService;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Controller class for managing bid-related operations.
+ */
 @RestController
 @RequestMapping("/api/bids")
 @AllArgsConstructor
 public class BidController {
-	private BidService bidService;
-	
-	@PostMapping
-	public ResponseEntity<Bid> placeBid(@RequestBody Bid bid){
-		return ResponseEntity.ok(bidService.placeBid(bid));
-	}
-	@GetMapping("/{auctionId}")
-	public ResponseEntity<List<Bid>> getBidsByAuction(@PathVariable int auctionId){
-		return ResponseEntity.ok(bidService.getBidsByAuction(auctionId));
-	}
-	@GetMapping("/highest")
-	public ResponseEntity<Double> getHighestBid(@RequestParam int auctionId){
-		return ResponseEntity.ok(bidService.getHighestBid(auctionId));
-	}
+    private BidService bidService;
+
+    /**
+     * Places a new bid.
+     * 
+     * @param bid the bid details to place
+     * @return a ResponseEntity containing the placed bid
+     */
+    @PostMapping
+    public ResponseEntity<Bid> placeBid(@RequestBody Bid bid) {
+        return ResponseEntity.ok(bidService.placeBid(bid));
+    }
+
+    /**
+     * Retrieves all bids for a specific auction.
+     * 
+     * @param auctionId the ID of the auction
+     * @return a ResponseEntity containing a list of bids for the auction
+     */
+    @GetMapping("/{auctionId}")
+    public ResponseEntity<List<Bid>> getBidsByAuction(@PathVariable int auctionId) {
+        return ResponseEntity.ok(bidService.getBidsByAuction(auctionId));
+    }
+
+    /**
+     * Retrieves the highest bid for a specific auction.
+     * 
+     * @param auctionId the ID of the auction
+     * @return a ResponseEntity containing the highest bid amount
+     */
+    @GetMapping("/highest")
+    public ResponseEntity<Double> getHighestBid(@RequestParam int auctionId) {
+        return ResponseEntity.ok(bidService.getHighestBid(auctionId));
+    }
 }

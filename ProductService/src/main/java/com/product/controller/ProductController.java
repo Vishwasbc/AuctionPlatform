@@ -20,40 +20,79 @@ import com.product.service.ProductService;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Controller class for managing product-related operations.
+ */
 @RestController
 @RequestMapping("/api/product")
 @AllArgsConstructor
 public class ProductController {
 
-	private ProductService productService;
+    private ProductService productService;
 
-	@GetMapping
-	public ResponseEntity<List<Product>> getAllProducts() {
-		return ResponseEntity.ok(productService.getAllProducts());
-	}
+    /**
+     * Retrieves all products.
+     * 
+     * @return a ResponseEntity containing a list of all products
+     */
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
 
-	@GetMapping("/get")
-	public ResponseEntity<Product> getProduct(@RequestParam int id) {
-		return ResponseEntity.ok(productService.getProductById(id));
-	}
+    /**
+     * Retrieves a product by its ID.
+     * 
+     * @param id the ID of the product to retrieve
+     * @return a ResponseEntity containing the product details
+     */
+    @GetMapping("/get")
+    public ResponseEntity<Product> getProduct(@RequestParam int id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 
-	@PostMapping
-	public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
-		return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
-	}
+    /**
+     * Saves a new product.
+     * 
+     * @param product the product details to save
+     * @return a ResponseEntity containing the saved product and HTTP status CREATED
+     */
+    @PostMapping
+    public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
+        return new ResponseEntity<>(productService.saveProduct(product), HttpStatus.CREATED);
+    }
 
-	@PutMapping
-	public ResponseEntity<Product> updateProduct(@RequestParam int id, @RequestBody Product product) {
-		return ResponseEntity.ok(productService.updateProduct(id, product));
-	}
+    /**
+     * Updates an existing product.
+     * 
+     * @param id the ID of the product to update
+     * @param product the updated product details
+     * @return a ResponseEntity containing the updated product
+     */
+    @PutMapping
+    public ResponseEntity<Product> updateProduct(@RequestParam int id, @RequestBody Product product) {
+        return ResponseEntity.ok(productService.updateProduct(id, product));
+    }
 
-	@DeleteMapping
-	public ResponseEntity<String> deleteProduct(@RequestParam int id) {
-		return ResponseEntity.ok(productService.deleteProduct(id));
-	}
+    /**
+     * Deletes a product by its ID.
+     * 
+     * @param id the ID of the product to delete
+     * @return a ResponseEntity containing the deletion status
+     */
+    @DeleteMapping
+    public ResponseEntity<String> deleteProduct(@RequestParam int id) {
+        return ResponseEntity.ok(productService.deleteProduct(id));
+    }
 
-	@GetMapping("{id}")
-	public ProductDTO getByProductId(@PathVariable int id) {
-		return productService.getByProductId(id);
-	}
+    /**
+     * Retrieves product details by its ID.
+     * 
+     * @param id the ID of the product to retrieve
+     * @return the product details as a ProductDTO
+     */
+    @GetMapping("{id}")
+    public ProductDTO getByProductId(@PathVariable int id) {
+        return productService.getByProductId(id);
+    }
 }

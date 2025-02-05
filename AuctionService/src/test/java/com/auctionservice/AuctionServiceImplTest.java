@@ -23,133 +23,133 @@ import com.auctionservice.entity.AuctionStatus;
 import com.auctionservice.exception.AuctionNotFound;
 import com.auctionservice.feign.ProductClient;
 import com.auctionservice.repository.AuctionRepository;
-import com.auctionservice.service.AuctionSerivceImpl;
+import com.auctionservice.service.*;
 
 @SpringBootTest
 class AuctionServiceImplTest {
 
-    @Mock
-    private AuctionRepository auctionRepository;
+	@Mock
+	private AuctionRepository auctionRepository;
 
-    @Mock
-    private ProductClient productClient;
+	@Mock
+	private ProductClient productClient;
 
-    @InjectMocks
-    private AuctionSerivceImpl auctionService;
+	@InjectMocks
+	private AuctionServiceImpl auctionService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+	@BeforeEach
+	void setUp() {
+		MockitoAnnotations.openMocks(this);
+	}
 
-    // Positive Test Cases
-    @Test
-    void testCreateAuction() {
-        Auction auction = new Auction();
-        auction.setProductId(1);
-        ProductDTO productDTO = new ProductDTO();
-        when(productClient.getByProductId(1)).thenReturn(productDTO);
-        when(auctionRepository.save(auction)).thenReturn(auction);
+	// Positive Test Cases
+	@Test
+	void testCreateAuction() {
+		Auction auction = new Auction();
+		auction.setProductId(1);
+		ProductDTO productDTO = new ProductDTO();
+		when(productClient.getByProductId(1)).thenReturn(productDTO);
+		when(auctionRepository.save(auction)).thenReturn(auction);
 
-        String result = auctionService.createAuction(auction);
+		String result = auctionService.createAuction(auction);
 
-        assertEquals("Auction Created", result);
-        verify(auctionRepository, times(1)).save(auction);
-    }
+		assertEquals("Auction Created", result);
+		verify(auctionRepository, times(1)).save(auction);
+	}
 
-    @Test
-    void testUpdateAuction() {
-        Auction auction = new Auction();
-        auction.setProductId(1);
-        when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
-        when(auctionRepository.save(auction)).thenReturn(auction);
+	@Test
+	void testUpdateAuction() {
+		Auction auction = new Auction();
+		auction.setProductId(1);
+		when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
+		when(auctionRepository.save(auction)).thenReturn(auction);
 
-        Auction updatedAuction = auctionService.updateAuction(1, auction);
+		Auction updatedAuction = auctionService.updateAuction(1, auction);
 
-        assertEquals(auction, updatedAuction);
-        verify(auctionRepository, times(1)).save(auction);
-    }
+		assertEquals(auction, updatedAuction);
+		verify(auctionRepository, times(1)).save(auction);
+	}
 
-    @Test
-    void testGetAuctionById() {
-        Auction auction = new Auction();
-        when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
+	@Test
+	void testGetAuctionById() {
+		Auction auction = new Auction();
+		when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
 
-        Auction result = auctionService.getAuctionById(1);
+		Auction result = auctionService.getAuctionById(1);
 
-        assertEquals(auction, result);
-    }
+		assertEquals(auction, result);
+	}
 
-    @Test
-    void testDeleteAuction() {
-        doNothing().when(auctionRepository).deleteById(1);
+	@Test
+	void testDeleteAuction() {
+		doNothing().when(auctionRepository).deleteById(1);
 
-        String result = auctionService.deleteAuction(1);
+		String result = auctionService.deleteAuction(1);
 
-        assertEquals("Auction Successfully Deleted", result);
-        verify(auctionRepository, times(1)).deleteById(1);
-    }
+		assertEquals("Auction Successfully Deleted", result);
+		verify(auctionRepository, times(1)).deleteById(1);
+	}
 
-    @Test
-    void testEndAuction() {
-        Auction auction = new Auction();
-        when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
-        when(auctionRepository.save(auction)).thenReturn(auction);
+	@Test
+	void testEndAuction() {
+		Auction auction = new Auction();
+		when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
+		when(auctionRepository.save(auction)).thenReturn(auction);
 
-        String result = auctionService.endAuction(1);
+		String result = auctionService.endAuction(1);
 
-        assertEquals("Auction Ended", result);
-        assertEquals(AuctionStatus.ENDED, auction.getStatus());
-        verify(auctionRepository, times(1)).save(auction);
-    }
+		assertEquals("Auction Ended", result);
+		assertEquals(AuctionStatus.ENDED, auction.getStatus());
+		verify(auctionRepository, times(1)).save(auction);
+	}
 
-    @Test
-    void testStartAuction() {
-        Auction auction = new Auction();
-        when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
-        when(auctionRepository.save(auction)).thenReturn(auction);
+	@Test
+	void testStartAuction() {
+		Auction auction = new Auction();
+		when(auctionRepository.findById(1)).thenReturn(Optional.of(auction));
+		when(auctionRepository.save(auction)).thenReturn(auction);
 
-        String result = auctionService.startAuction(1);
+		String result = auctionService.startAuction(1);
 
-        assertEquals("Auction Started", result);
-        assertEquals(AuctionStatus.LIVE, auction.getStatus());
-        verify(auctionRepository, times(1)).save(auction);
-    }
+		assertEquals("Auction Started", result);
+		assertEquals(AuctionStatus.LIVE, auction.getStatus());
+		verify(auctionRepository, times(1)).save(auction);
+	}
 
-    // Negative Test Cases
-    @Test
-    void testUpdateAuction_AuctionNotFound() {
-        Auction auction = new Auction();
-        when(auctionRepository.findById(1)).thenReturn(Optional.empty());
+	// Negative Test Cases
+	@Test
+	void testUpdateAuction_AuctionNotFound() {
+		Auction auction = new Auction();
+		when(auctionRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(AuctionNotFound.class, () -> auctionService.updateAuction(1, auction));
-    }
+		assertThrows(AuctionNotFound.class, () -> auctionService.updateAuction(1, auction));
+	}
 
-    @Test
-    void testGetAuctionById_AuctionNotFound() {
-        when(auctionRepository.findById(1)).thenReturn(Optional.empty());
+	@Test
+	void testGetAuctionById_AuctionNotFound() {
+		when(auctionRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(AuctionNotFound.class, () -> auctionService.getAuctionById(1));
-    }
+		assertThrows(AuctionNotFound.class, () -> auctionService.getAuctionById(1));
+	}
 
-    @Test
-    void testDeleteAuction_AuctionNotFound() {
-        doThrow(new AuctionNotFound("Auction with id:1 does not exist")).when(auctionRepository).deleteById(1);
+	@Test
+	void testDeleteAuction_AuctionNotFound() {
+		doThrow(new AuctionNotFound("Auction with id:1 does not exist")).when(auctionRepository).deleteById(1);
 
-        assertThrows(AuctionNotFound.class, () -> auctionService.deleteAuction(1));
-    }
+		assertThrows(AuctionNotFound.class, () -> auctionService.deleteAuction(1));
+	}
 
-    @Test
-    void testEndAuction_AuctionNotFound() {
-        when(auctionRepository.findById(1)).thenReturn(Optional.empty());
+	@Test
+	void testEndAuction_AuctionNotFound() {
+		when(auctionRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(AuctionNotFound.class, () -> auctionService.endAuction(1));
-    }
+		assertThrows(AuctionNotFound.class, () -> auctionService.endAuction(1));
+	}
 
-    @Test
-    void testStartAuction_AuctionNotFound() {
-        when(auctionRepository.findById(1)).thenReturn(Optional.empty());
+	@Test
+	void testStartAuction_AuctionNotFound() {
+		when(auctionRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(AuctionNotFound.class, () -> auctionService.startAuction(1));
-    }
+		assertThrows(AuctionNotFound.class, () -> auctionService.startAuction(1));
+	}
 }

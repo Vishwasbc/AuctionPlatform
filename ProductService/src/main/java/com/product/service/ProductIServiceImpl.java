@@ -14,64 +14,106 @@ import com.product.repository.ProductRepository;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Service implementation class for managing product-related operations.
+ */
 @Service
 @AllArgsConstructor
 public class ProductIServiceImpl implements ProductService {
-	private ProductRepository productRepository;
-	private UserClient userClient;
+    private ProductRepository productRepository;
+    private UserClient userClient;
 
-	@Override
-	public List<Product> getAllProducts() {
-		return productRepository.findAll();
-	}
+    /**
+     * Retrieves all products.
+     * 
+     * @return a list of all products
+     */
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 
-	@Override
-	public Product getProductById(int id) {
-		return productRepository.findById(id)
-				.orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + " not Found"));
-	}
+    /**
+     * Retrieves a product by its ID.
+     * 
+     * @param id the ID of the product to retrieve
+     * @return the product details
+     * @throws ProductNotFoundException if the product is not found
+     */
+    @Override
+    public Product getProductById(int id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + " not Found"));
+    }
 
-	@Override
-	public Product saveProduct(Product product) {
-		UserDTO user = userClient.getByUserName(product.getSellerName());
-		if (user == null) {
-			throw new UserNotFoundException("Invalid Seller");
-		}
-		return productRepository.save(product);
-	}
+    /**
+     * Saves a new product.
+     * 
+     * @param product the product details to save
+     * @return the saved product
+     * @throws UserNotFoundException if the seller is not found
+     */
+    @Override
+    public Product saveProduct(Product product) {
+        UserDTO user = userClient.getByUserName(product.getSellerName());
+        if (user == null) {
+            throw new UserNotFoundException("Invalid Seller");
+        }
+        return productRepository.save(product);
+    }
 
-	@Override
-	public String deleteProduct(int id) {
-		productRepository.deleteById(id);
-		return "Product Deleted";
-	}
+    /**
+     * Deletes a product by its ID.
+     * 
+     * @param id the ID of the product to delete
+     * @return a message indicating the deletion status
+     */
+    @Override
+    public String deleteProduct(int id) {
+        productRepository.deleteById(id);
+        return "Product Deleted";
+    }
 
-	@Override
-	public Product updateProduct(int id, Product product) {
-		UserDTO user = userClient.getByUserName(product.getSellerName());
-		if (user == null) {
-			throw new UserNotFoundException("Invalid Seller");
-		}
-		Product update = new Product();
-		update.setProductId(id);
-		update.setProductName(product.getProductName());
-		update.setProductDescription(product.getProductDescription());
-		update.setPrice(product.getPrice());
-		update.setSellerName(product.getSellerName());
-		return productRepository.save(update);
-	}
+    /**
+     * Updates an existing product.
+     * 
+     * @param id the ID of the product to update
+     * @param product the updated product details
+     * @return the updated product
+     * @throws UserNotFoundException if the seller is not found
+     */
+    @Override
+    public Product updateProduct(int id, Product product) {
+        UserDTO user = userClient.getByUserName(product.getSellerName());
+        if (user == null) {
+            throw new UserNotFoundException("Invalid Seller");
+        }
+        Product update = new Product();
+        update.setProductId(id);
+        update.setProductName(product.getProductName());
+        update.setProductDescription(product.getProductDescription());
+        update.setPrice(product.getPrice());
+        update.setSellerName(product.getSellerName());
+        return productRepository.save(update);
+    }
 
-	@Override
-	public ProductDTO getByProductId(int id) {
-		Product product = productRepository.findById(id)
-				.orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + " not Found"));
-		ProductDTO productDTO = new ProductDTO();
-		productDTO.setProductId(product.getProductId());
-		productDTO.setProductName(product.getProductName());
-		productDTO.setProductDescription(product.getProductDescription());
-		productDTO.setPrice(product.getPrice());
-		productDTO.setSellerName(product.getSellerName());
-		return productDTO;
-	}
-
+    /**
+     * Retrieves product details by its ID.
+     * 
+     * @param id the ID of the product to retrieve
+     * @return the product details as a ProductDTO
+     * @throws ProductNotFoundException if the product is not found
+     */
+    @Override
+    public ProductDTO getByProductId(int id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id:" + id + " not Found"));
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(product.getProductId());
+        productDTO.setProductName(product.getProductName());
+        productDTO.setProductDescription(product.getProductDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setSellerName(product.getSellerName());
+        return productDTO;
+    }
 }

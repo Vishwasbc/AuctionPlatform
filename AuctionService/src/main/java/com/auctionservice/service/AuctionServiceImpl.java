@@ -14,23 +14,40 @@ import com.auctionservice.repository.AuctionRepository;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Service implementation class for managing auction-related operations.
+ */
 @Service
 @AllArgsConstructor
-public class AuctionSerivceImpl implements AuctionService {
+public class AuctionServiceImpl implements AuctionService {
 	private AuctionRepository auctionRepository;
 	private ProductClient productClient;
 
+	/**
+	 * Creates a new auction.
+	 * 
+	 * @param auction the auction details to create
+	 * @return a message indicating the creation status
+	 */
 	@Override
 	public String createAuction(Auction auction) {
-		ProductDTO product=productClient.getByProductId(auction.getProductId());
+		ProductDTO product = productClient.getByProductId(auction.getProductId());
 		auctionRepository.save(auction);
 		return "Auction Created";
 	}
 
+	/**
+	 * Updates an existing auction.
+	 * 
+	 * @param id      the ID of the auction to update
+	 * @param auction the updated auction details
+	 * @return the updated auction
+	 * @throws AuctionNotFound if the auction is not found
+	 */
 	@Override
 	public Auction updateAuction(int id, Auction auction) {
 		Auction existingAuction = auctionRepository.findById(id)
-				.orElseThrow(() -> new AuctionNotFound("Auction with id:"+id+" does not exist"));
+				.orElseThrow(() -> new AuctionNotFound("Auction with id:" + id + " does not exist"));
 
 		existingAuction.setProductId(auction.getProductId());
 		existingAuction.setDescription(auction.getDescription());
@@ -45,22 +62,48 @@ public class AuctionSerivceImpl implements AuctionService {
 		return auctionRepository.save(existingAuction);
 	}
 
+	/**
+	 * Retrieves all auctions.
+	 * 
+	 * @return a list of all auctions
+	 */
 	@Override
 	public List<Auction> getAllAuction() {
 		return auctionRepository.findAll();
 	}
 
+	/**
+	 * Retrieves an auction by its ID.
+	 * 
+	 * @param id the ID of the auction to retrieve
+	 * @return the auction details
+	 * @throws AuctionNotFound if the auction is not found
+	 */
 	@Override
 	public Auction getAuctionById(int id) {
-		return auctionRepository.findById(id).orElseThrow(() -> new AuctionNotFound("Auction with id:"+id+" does not exist"));
+		return auctionRepository.findById(id)
+				.orElseThrow(() -> new AuctionNotFound("Auction with id:" + id + " does not exist"));
 	}
 
+	/**
+	 * Deletes an auction by its ID.
+	 * 
+	 * @param id the ID of the auction to delete
+	 * @return a message indicating the deletion status
+	 */
 	@Override
 	public String deleteAuction(int id) {
 		auctionRepository.deleteById(id);
 		return "Auction Successfully Deleted";
 	}
 
+	/**
+	 * Ends an ongoing auction by its ID.
+	 * 
+	 * @param id the ID of the auction to end
+	 * @return a message indicating the end status
+	 * @throws AuctionNotFound if the auction is not found
+	 */
 	@Override
 	public String endAuction(int id) {
 		Auction ongoingAuction = auctionRepository.findById(id)
@@ -70,6 +113,13 @@ public class AuctionSerivceImpl implements AuctionService {
 		return "Auction Ended";
 	}
 
+	/**
+	 * Starts an auction by its ID.
+	 * 
+	 * @param id the ID of the auction to start
+	 * @return a message indicating the start status
+	 * @throws AuctionNotFound if the auction is not found
+	 */
 	@Override
 	public String startAuction(int id) {
 		Auction existingAuction = auctionRepository.findById(id)
@@ -79,6 +129,13 @@ public class AuctionSerivceImpl implements AuctionService {
 		return "Auction Started";
 	}
 
+	/**
+	 * Retrieves auction details by its ID.
+	 * 
+	 * @param id the ID of the auction to retrieve
+	 * @return the auction details as an AuctionDTO
+	 * @throws AuctionNotFound if the auction is not found
+	 */
 	@Override
 	public AuctionDTO getByAuctionId(int id) {
 		Auction auction = auctionRepository.findById(id)
@@ -96,6 +153,13 @@ public class AuctionSerivceImpl implements AuctionService {
 		return auctionDTO;
 	}
 
+	/**
+	 * Updates the highest bid for an auction.
+	 * 
+	 * @param id    the ID of the auction
+	 * @param price the new highest bid price
+	 * @throws AuctionNotFound if the auction is not found
+	 */
 	@Override
 	public void updateHighestBid(int id, double price) {
 		Auction auction = auctionRepository.findById(id)
@@ -103,6 +167,4 @@ public class AuctionSerivceImpl implements AuctionService {
 		auction.setCurrentHighestBid(price);
 		auctionRepository.save(auction);
 	}
-	
-
 }

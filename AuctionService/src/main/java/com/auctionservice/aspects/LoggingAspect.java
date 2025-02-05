@@ -1,4 +1,4 @@
-package com.auctionservice.aspect;
+package com.auctionservice.aspects;
 
 import java.util.Arrays;
 
