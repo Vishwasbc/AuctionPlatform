@@ -21,4 +21,6 @@ public interface AuctionService {
 	String startAuction(int id);
 
 	AuctionDTO getByAuctionId(int id);
+
+	void updateHighestBid(int id, double price);
 }

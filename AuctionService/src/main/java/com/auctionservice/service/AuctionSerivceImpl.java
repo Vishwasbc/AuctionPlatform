@@ -95,6 +95,14 @@ public class AuctionSerivceImpl implements AuctionService {
 		auctionDTO.setMinBidAmount(auction.getMinBidAmount());
 		return auctionDTO;
 	}
+
+	@Override
+	public void updateHighestBid(int id, double price) {
+		Auction auction = auctionRepository.findById(id)
+				.orElseThrow(() -> new AuctionNotFound("Auction does not exist"));
+		auction.setCurrentHighestBid(price);
+		auctionRepository.save(auction);
+	}
 	
 
 }

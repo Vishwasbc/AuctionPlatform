@@ -64,4 +64,8 @@ public class AuctionController {
 	public AuctionDTO getByAuctionId(@PathVariable int id) {
 		return auctionService.getByAuctionId(id);
 	}
+	@PostMapping("/{id}/{price}")
+	public void updateHighestBid(@PathVariable int id,@PathVariable double price) {
+		auctionService.updateHighestBid(id,price);
+	}
 }

@@ -41,7 +41,7 @@ public class BidServiceImpl implements BidService {
         if (bid.getBidAmount()<auction.getCurrentHighestBid()+auction.getMinBidAmount()) {
             throw new InvalidBidAmountException("Invalid Bid Amount");
         }
- 
+        auctionClient.updateHighestBid(bid.getAuctionId(),bid.getBidAmount());
         return bidRepository.save(bid);
 	}
 
@@ -52,7 +52,7 @@ public class BidServiceImpl implements BidService {
 
 	@Override
 	public double getHighestBid(int auctionId) {
-		return bidRepository.findTopByAuctionIdOrderByBidAmountDesc(auctionId);
+		return auctionClient.getAuctionById(auctionId).getCurrentHighestBid();
 	}
 
 }
