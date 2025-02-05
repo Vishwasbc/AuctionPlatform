@@ -19,30 +19,30 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class BidServiceImpl implements BidService {
-    private BidRepository bidRepository;
-    private UserClient userClient;
-    private AuctionClient auctionClient;
+	private BidRepository bidRepository;
+	private UserClient userClient;
+	private AuctionClient auctionClient;
 
 	@Override
 	public Bid placeBid(Bid bid) {
-		//validate Bidder
+		// validate Bidder
 		UserDto bidder = userClient.getByUserName(bid.getBidderName());
-        if (bidder == null) {
-            throw new InvalidBidderException("Invalid bidder: User not found");
-        }
- 
-        // Validate auction
-        AuctionDto auction = auctionClient.getAuctionById(bid.getAuctionId());
-        if (auction == null) {
-            throw new AuctionNotFoundException("Invalid auction: Auction not found");
-        }
- 
-        // Check bid validity
-        if (bid.getBidAmount()<auction.getCurrentHighestBid()+auction.getMinBidAmount()) {
-            throw new InvalidBidAmountException("Invalid Bid Amount");
-        }
-        auctionClient.updateHighestBid(bid.getAuctionId(),bid.getBidAmount());
-        return bidRepository.save(bid);
+		if (bidder == null) {
+			throw new InvalidBidderException("Invalid bidder: User not found");
+		}
+
+		// Validate auction
+		AuctionDto auction = auctionClient.getAuctionById(bid.getAuctionId());
+		if (auction == null) {
+			throw new AuctionNotFoundException("Invalid auction: Auction not found");
+		}
+
+		// Check bid validity
+		if (bid.getBidAmount() < auction.getCurrentHighestBid() + auction.getMinBidAmount()) {
+			throw new InvalidBidAmountException("Invalid Bid Amount");
+		}
+		auctionClient.updateHighestBid(bid.getAuctionId(), bid.getBidAmount());
+		return bidRepository.save(bid);
 	}
 
 	@Override

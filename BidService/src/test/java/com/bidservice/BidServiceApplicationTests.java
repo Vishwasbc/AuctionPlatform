@@ -1,17 +1,19 @@
 package com.bidservice;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.bidservice.dto.AuctionDto;
 import com.bidservice.dto.UserDto;
@@ -24,8 +26,8 @@ import com.bidservice.feign.UserClient;
 import com.bidservice.repository.BidRepository;
 import com.bidservice.service.BidServiceImpl;
 
-@ExtendWith(MockitoExtension.class)
-public class BidServiceApplicationTests {
+@SpringBootTest
+class BidServiceImplTest {
 
     @Mock
     private BidRepository bidRepository;
@@ -39,42 +41,40 @@ public class BidServiceApplicationTests {
     @InjectMocks
     private BidServiceImpl bidService;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
-    public void testPlaceBid_Success() {
+    void testPlaceBid_ValidBid() {
         Bid bid = new Bid();
         bid.setBidderName("testUser");
         bid.setAuctionId(1);
-        bid.setBidAmount(100.0);
+        bid.setBidAmount(150.0);
 
         UserDto userDto = new UserDto();
         userDto.setUserName("testUser");
-        userDto.setFirstName("Test");
-        userDto.setLastName("User");
-        userDto.setEmail("testuser@example.com");
 
         AuctionDto auctionDto = new AuctionDto();
         auctionDto.setAuctionId(1);
-        auctionDto.setCurrentHighestBid(50.0);
+        auctionDto.setCurrentHighestBid(100.0);
         auctionDto.setMinBidAmount(10.0);
 
         when(userClient.getByUserName("testUser")).thenReturn(userDto);
         when(auctionClient.getAuctionById(1)).thenReturn(auctionDto);
-        when(bidRepository.save(any(Bid.class))).thenReturn(bid);
+        when(bidRepository.save(bid)).thenReturn(bid);
 
         Bid result = bidService.placeBid(bid);
 
-        assertNotNull(result);
-        assertEquals("testUser", result.getBidderName());
-        assertEquals(1, result.getAuctionId());
-        assertEquals(100.0, result.getBidAmount(), 0.0);
+        assertEquals(bid, result);
+        verify(auctionClient).updateHighestBid(1, 150.0);
     }
 
     @Test
-    public void testPlaceBid_InvalidBidder() {
+    void testPlaceBid_InvalidBidder() {
         Bid bid = new Bid();
         bid.setBidderName("invalidUser");
-        bid.setAuctionId(1);
-        bid.setBidAmount(100.0);
 
         when(userClient.getByUserName("invalidUser")).thenReturn(null);
 
@@ -82,17 +82,13 @@ public class BidServiceApplicationTests {
     }
 
     @Test
-    public void testPlaceBid_InvalidAuction() {
+    void testPlaceBid_InvalidAuction() {
         Bid bid = new Bid();
         bid.setBidderName("testUser");
         bid.setAuctionId(1);
-        bid.setBidAmount(100.0);
 
         UserDto userDto = new UserDto();
         userDto.setUserName("testUser");
-        userDto.setFirstName("Test");
-        userDto.setLastName("User");
-        userDto.setEmail("testuser@example.com");
 
         when(userClient.getByUserName("testUser")).thenReturn(userDto);
         when(auctionClient.getAuctionById(1)).thenReturn(null);
@@ -101,21 +97,18 @@ public class BidServiceApplicationTests {
     }
 
     @Test
-    public void testPlaceBid_InvalidBidAmount() {
+    void testPlaceBid_InvalidBidAmount() {
         Bid bid = new Bid();
         bid.setBidderName("testUser");
         bid.setAuctionId(1);
-        bid.setBidAmount(55.0);
+        bid.setBidAmount(105.0);
 
         UserDto userDto = new UserDto();
         userDto.setUserName("testUser");
-        userDto.setFirstName("Test");
-        userDto.setLastName("User");
-        userDto.setEmail("testuser@example.com");
 
         AuctionDto auctionDto = new AuctionDto();
         auctionDto.setAuctionId(1);
-        auctionDto.setCurrentHighestBid(50.0);
+        auctionDto.setCurrentHighestBid(100.0);
         auctionDto.setMinBidAmount(10.0);
 
         when(userClient.getByUserName("testUser")).thenReturn(userDto);
@@ -125,22 +118,30 @@ public class BidServiceApplicationTests {
     }
 
     @Test
-    public void testGetBidsByAuction() {
-        List<Bid> bids = Arrays.asList(new Bid(), new Bid());
+    void testGetBidsByAuction() {
+        Bid bid1 = new Bid();
+        bid1.setAuctionId(1);
+        Bid bid2 = new Bid();
+        bid2.setAuctionId(1);
+
+        List<Bid> bids = Arrays.asList(bid1, bid2);
+
         when(bidRepository.findAllByAuctionId(1)).thenReturn(bids);
 
         List<Bid> result = bidService.getBidsByAuction(1);
 
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(bids, result);
     }
 
     @Test
-    public void testGetHighestBid() {
-        when(bidRepository.findTopByAuctionIdOrderByBidAmountDesc(1)).thenReturn(100.0);
+    void testGetHighestBid() {
+        AuctionDto auctionDto = new AuctionDto();
+        auctionDto.setCurrentHighestBid(200.0);
+
+        when(auctionClient.getAuctionById(1)).thenReturn(auctionDto);
 
         double result = bidService.getHighestBid(1);
 
-        assertEquals(100.0, result, 0.0);
+        assertEquals(200.0, result);
     }
 }
