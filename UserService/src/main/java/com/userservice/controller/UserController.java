@@ -38,7 +38,6 @@ public class UserController {
 	public ResponseEntity<String> login(@RequestParam String userName, @RequestParam String password) {
 		return ResponseEntity.ok(userService.loginUser(userName, password));
 	}
-	
 
 	/**
 	 * Handles user registration requests.
