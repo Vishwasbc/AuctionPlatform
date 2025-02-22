@@ -1,13 +1,12 @@
 package com.userservice.service;
 
-import java.util.Objects;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.userservice.DTO.UserDTO;
 import com.userservice.entity.User;
 import com.userservice.exception.DuplicateEntityException;
-import com.userservice.exception.IncorrectPasswordException;
 import com.userservice.exception.UserNotFoundException;
 import com.userservice.repository.UserRepository;
 
@@ -21,6 +20,8 @@ import lombok.AllArgsConstructor;
 public class UserServiceImpementation implements UserService {
 
 	private UserRepository userRepository;
+	
+	private PasswordEncoder passwordEncoder;
 
 	/**
 	 * Logs in a user with the given username and password.
@@ -31,15 +32,15 @@ public class UserServiceImpementation implements UserService {
 	 * @throws UserNotFoundException      if the user is not found
 	 * @throws IncorrectPasswordException if the password is incorrect
 	 */
-	@Override
-	public String loginUser(String userName, String password) {
-		User user = userRepository.findById(userName)
-				.orElseThrow(() -> new UserNotFoundException(userName + " not Found"));
-		if (!Objects.equals(user.getPassword(), password)) {
-			throw new IncorrectPasswordException("Wrong Password");
-		}
-		return "Logged In";
-	}
+//	@Override
+//	public String loginUser(String userName, String password) {
+//		User user = userRepository.findById(userName)
+//				.orElseThrow(() -> new UserNotFoundException(userName + " not Found"));
+//		if (!Objects.equals(user.getPassword(), password)) {
+//			throw new IncorrectPasswordException("Wrong Password");
+//		}
+//		return "Logged In";
+//	}
 
 	/**
 	 * Registers a new user.
@@ -49,11 +50,14 @@ public class UserServiceImpementation implements UserService {
 	 * @throws DuplicateEntityException if the user exists in database
 	 */
 	@Override
-	public User registerUser(User user) {
+	public String registerUser(User user) {
 		if (userRepository.findById(user.getUserName()).isPresent()) {
-			throw new DuplicateEntityException("Entity with usename " + user.getUserName() + " already exists.");
+			throw new DuplicateEntityException("The User is Already Registered");
 		}
-		return userRepository.save(user);
+		System.out.print(user.getPassword());
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		userRepository.save(user);
+		return "Registration Successfully ";
 	}
 
 	/**
