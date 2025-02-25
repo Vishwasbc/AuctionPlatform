@@ -1,5 +1,7 @@
 package com.gateway.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -14,6 +16,8 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
+
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
 	@Autowired
 	private RouteValidator validator;
@@ -59,20 +63,26 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 	}
 
 	private boolean isAuthorized(String role, String path, String method) {
+		logger.info("Role: {}, Path: {}, Method: {}", role, path, method);
 		if ("ADMIN".equalsIgnoreCase(role)) {
 			return path.startsWith("/user") || path.startsWith("/product") || path.startsWith("/auction")
 					|| path.startsWith("/bids");
 		} else if ("BIDDER".equalsIgnoreCase(role)) {
-			return (path.startsWith("/cart") || path.startsWith("/products")) && method.equalsIgnoreCase("GET");
-		}
-		else if ("SELLER".equalsIgnoreCase(role)) {
-			return (path.startsWith("/cart") || path.startsWith("/products")) && method.equalsIgnoreCase("GET");
+			return (path.startsWith("/auction") && method.equalsIgnoreCase("GET"))
+					|| (path.startsWith("/product") && method.equalsIgnoreCase("GET")) || path.startsWith("bids")
+					|| (path.startsWith("/user") && (!method.equalsIgnoreCase("DELETE")));
+		} else if ("SELLER".equalsIgnoreCase(role)) {
+			return (path.startsWith("/user") && (method.equalsIgnoreCase("GET") || method.equalsIgnoreCase("PUT")))
+					|| (path.startsWith("/product") && (!method.equalsIgnoreCase("DELETE")))
+					|| (path.startsWith("/auction") && method.equalsIgnoreCase("GET"))
+					|| (path.startsWith("/bids") && method.equalsIgnoreCase("GET"));
 		}
 		return false;
 	}
 
 	private Mono<Void> handleUnauthorized(ServerHttpResponse response, String message) {
 		response.setStatusCode(HttpStatus.FORBIDDEN);
+		response.getHeaders().add("Error-Message", message);
 		return response.setComplete();
 	}
 }

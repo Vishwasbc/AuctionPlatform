@@ -48,6 +48,7 @@ public class UserController {
 	 */
 	@PostMapping("/login")
 	public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+		System.out.println("The Parameters are"+authRequest.getUsername());
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 		if (authentication.isAuthenticated()) {
@@ -96,6 +97,7 @@ public class UserController {
 
 	/**
 	 * Retrieves user details by username.
+	 * This is for Other Services
 	 * 
 	 * @param userName the username of the user to retrieve
 	 * @return the user details as a UserDTO
