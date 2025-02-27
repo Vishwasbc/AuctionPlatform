@@ -72,7 +72,6 @@ public class User {
      */
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    //TODO:Add date validation
     private Date birthDate;
 
     /**
