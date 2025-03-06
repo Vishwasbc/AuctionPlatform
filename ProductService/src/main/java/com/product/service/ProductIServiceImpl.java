@@ -5,12 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.product.dto.ProductDTO;
-import com.product.dto.UserDTO;
 import com.product.entity.Product;
 import com.product.entity.Status;
 import com.product.exception.InvalidUserException;
 import com.product.exception.ProductNotFoundException;
-import com.product.feign.UserClient;
 import com.product.repository.ProductRepository;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +20,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ProductIServiceImpl implements ProductService {
 	private ProductRepository productRepository;
-	private UserClient userClient;
 
 	/**
 	 * Retrieves all products.
@@ -56,10 +53,6 @@ public class ProductIServiceImpl implements ProductService {
 	 */
 	@Override
 	public Product saveProduct(Product product) {
-		UserDTO user = userClient.getByUserName(product.getSellerName());
-		if (!user.getRole().equalsIgnoreCase("Seller")) {
-			throw new InvalidUserException("The user:" + user.getUserName() + " is not a Seller");
-		}
 		return productRepository.save(product);
 	}
 
@@ -85,15 +78,12 @@ public class ProductIServiceImpl implements ProductService {
 	 */
 	@Override
 	public Product updateProduct(int id, Product product) {
-		UserDTO user = userClient.getByUserName(product.getSellerName());
-		if (!user.getRole().equalsIgnoreCase("Seller")) {
-			throw new InvalidUserException("The user:" + user.getUserName() + " is not a Seller");
-		}
 		Product update = new Product();
 		update.setProductId(id);
 		update.setProductName(product.getProductName());
 		update.setProductDescription(product.getProductDescription());
 		update.setPrice(product.getPrice());
+		update.setStatus(product.getStatus());
 		update.setSellerName(product.getSellerName());
 		return productRepository.save(update);
 	}

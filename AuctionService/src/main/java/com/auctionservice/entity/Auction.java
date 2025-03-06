@@ -25,7 +25,6 @@ public class Auction {
 	@NotNull
 	private int productId;
 	@NotNull
-	@FutureOrPresent
 	private LocalDateTime startDate;
 	@NotNull
 	private LocalDateTime endDate;

@@ -2,7 +2,6 @@ package com.userservice.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.userservice.DTO.AuthRequest;
 import com.userservice.DTO.UserDTO;
-import com.userservice.entity.Role;
 import com.userservice.entity.User;
+import com.userservice.exception.DuplicateEntityException;
 import com.userservice.repository.UserRepository;
 import com.userservice.service.JwtService;
 import com.userservice.service.UserService;
@@ -48,7 +47,6 @@ public class UserController {
 	 */
 	@PostMapping("/login")
 	public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-		System.out.println("The Parameters are"+authRequest.getUsername());
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 		if (authentication.isAuthenticated()) {
@@ -62,14 +60,21 @@ public class UserController {
 
 	/**
 	 * Handles user registration requests.
-	 * 
+	 *
 	 * @param user the user details to register
 	 * @return a ResponseEntity containing the registered user and HTTP status
 	 *         CREATED
 	 */
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestBody User user) {
-		return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+		try {
+			return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+		} catch (DuplicateEntityException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+		} catch (Exception e) {
+			return new ResponseEntity<>("User registration failed. Please try again later.",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -96,8 +101,7 @@ public class UserController {
 	}
 
 	/**
-	 * Retrieves user details by username.
-	 * This is for Other Services
+	 * Retrieves user details by username. This is for Other Services
 	 * 
 	 * @param userName the username of the user to retrieve
 	 * @return the user details as a UserDTO
@@ -106,4 +110,10 @@ public class UserController {
 	public UserDTO getByUserName(@PathVariable String userName) {
 		return userService.getByUserName(userName);
 	}
+	@GetMapping("/full-info/{userName}")
+	public ResponseEntity<User> getFullUserInfoByUsername(@PathVariable String userName) {
+	    User user = userService.getFullUserByUserName(userName);
+	    return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
 }

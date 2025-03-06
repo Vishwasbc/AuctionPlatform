@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.auctionservice.entity.Auction;
 import com.auctionservice.entity.AuctionStatus;
+import com.auctionservice.feign.ProductClient;
 import com.auctionservice.repository.AuctionRepository;
 
 import lombok.AllArgsConstructor;
@@ -18,11 +19,11 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class AuctionSchedulerImpl implements AuctionScheduler {
-    private AuctionRepository auctionRepository;
+    private final AuctionRepository auctionRepository;
+    private final ProductClient productClient;
 
     /**
-     * Starts auction that are scheduled to start.
-     * This method runs every 10 seconds.
+     * Starts auctions that are scheduled to start. This method runs every 10 seconds.
      */
     @Override
     @Scheduled(fixedRate = 10000) // Runs every 10 seconds
@@ -38,8 +39,7 @@ public class AuctionSchedulerImpl implements AuctionScheduler {
     }
 
     /**
-     * Ends auction that are scheduled to end.
-     * This method runs every 10 seconds.
+     * Ends auctions that are scheduled to end. This method runs every 10 seconds.
      */
     @Override
     @Scheduled(fixedRate = 10000) // Runs every 10 seconds
@@ -51,6 +51,11 @@ public class AuctionSchedulerImpl implements AuctionScheduler {
                 auction.setStatus(AuctionStatus.ENDED);
                 auctionRepository.save(auction);
                 System.out.println("Auction " + auction.getAuctionId() + " ended at " + now);
+                if(auction.getCurrentHighestBid()>0) {
+                	productClient.setUpdatedStatus(auction.getProductId(),"SOLD");
+                }else {
+                	productClient.setUpdatedStatus(auction.getProductId(),"UNSOLD");
+                }
             }
         }
     }

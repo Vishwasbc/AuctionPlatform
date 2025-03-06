@@ -40,4 +40,6 @@ public interface UserService {
      * @return the user details as a UserDTO
      */
     UserDTO getByUserName(String userName);
+
+	User getFullUserByUserName(String userName);
 }

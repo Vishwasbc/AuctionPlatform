@@ -112,6 +112,11 @@ public class AuctionServiceImpl implements AuctionService {
 		Auction ongoingAuction = auctionRepository.findById(id)
 				.orElseThrow(() -> new AuctionNotFoundException("Auction with id:" + id + " does not exist"));
 		ongoingAuction.setStatus(AuctionStatus.ENDED);
+		if(ongoingAuction.getCurrentHighestBid()>0) {
+        	productClient.setUpdatedStatus(ongoingAuction.getProductId(),"SOLD");
+        }else {
+        	productClient.setUpdatedStatus(ongoingAuction.getProductId(),"UNSOLD");
+        }
 		auctionRepository.save(ongoingAuction);
 		return "Auction Ended";
 	}

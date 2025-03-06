@@ -38,11 +38,6 @@ public class BidServiceImpl implements BidService {
      */
     @Override
     public Bid placeBid(Bid bid) {
-        // Validate bidder
-        UserDto bidder = userClient.getByUserName(bid.getBidderName());
-        if(!bidder.getRole().equalsIgnoreCase("bidder")) {
-        	throw new InvalidBidderException("User "+bidder.getUserName()+" is not allowed to bid");
-        }
 
         // Validate auction
         AuctionDto auction = auctionClient.getAuctionById(bid.getAuctionId());
@@ -86,7 +81,7 @@ public class BidServiceImpl implements BidService {
 	@Override
 	public Bid getHighestBidder(int auctionId) {
 		AuctionDto auction=auctionClient.getAuctionById(auctionId);
-		if(!auction.getStatus().equalsIgnoreCase("upcoming")) {
+		if(auction.getStatus().equalsIgnoreCase("upcoming")) {
 			throw new AuctionNotStartedException("Auction has not yet Started");
 		}
 		double bid=auction.getCurrentHighestBid();

@@ -70,7 +70,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 		} else if ("BIDDER".equalsIgnoreCase(role)) {
 			return (path.startsWith("/auction") && method.equalsIgnoreCase("GET"))
 					|| (path.startsWith("/product") && method.equalsIgnoreCase("GET")) || path.startsWith("bids")
-					|| (path.startsWith("/user") && (!method.equalsIgnoreCase("DELETE")));
+					|| (path.startsWith("/user") && (!method.equalsIgnoreCase("DELETE")))
+					|| (path.startsWith("/bids")&&method.equalsIgnoreCase("GET")||method.equalsIgnoreCase("POST"));
 		} else if ("SELLER".equalsIgnoreCase(role)) {
 			return (path.startsWith("/user") && (method.equalsIgnoreCase("GET") || method.equalsIgnoreCase("PUT")))
 					|| (path.startsWith("/product") && (!method.equalsIgnoreCase("DELETE")))

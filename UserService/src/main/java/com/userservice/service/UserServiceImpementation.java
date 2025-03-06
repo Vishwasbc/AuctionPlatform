@@ -11,12 +11,14 @@ import com.userservice.exception.UserNotFoundException;
 import com.userservice.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service implementation class for managing user-related operations.
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserServiceImpementation implements UserService {
 
 	private UserRepository userRepository;
@@ -43,22 +45,30 @@ public class UserServiceImpementation implements UserService {
 //	}
 
 	/**
-	 * Registers a new user.
-	 * 
-	 * @param user the user details to register
-	 * @return the registered user
-	 * @throws DuplicateEntityException if the user exists in database
-	 */
-	@Override
-	public String registerUser(User user) {
-		if (userRepository.findById(user.getUserName()).isPresent()) {
-			throw new DuplicateEntityException("The User is Already Registered");
-		}
-		System.out.print(user.getPassword());
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		userRepository.save(user);
-		return "Registration Successfully ";
-	}
+     * Registers a new user.
+     *
+     * @param user the user details to register
+     * @return the registered user
+     * @throws DuplicateEntityException if the user exists in database
+     */
+    @Override
+    public String registerUser(User user) {
+        try {
+            if (userRepository.findById(user.getUserName()).isPresent()) {
+                throw new DuplicateEntityException("The User is Already Registered");
+            }
+            log.info("Registering user: {}", user.getUserName());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+            return "Registered Successfully";
+        } catch (DuplicateEntityException e) {
+            log.error("User registration failed: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("An unexpected error occurred during registration: {}", e.getMessage());
+            throw new RuntimeException("User registration failed. Please try again later.");
+        }
+    }
 
 	/**
 	 * Deletes a user with the given username.
@@ -118,4 +128,10 @@ public class UserServiceImpementation implements UserService {
 		userDTO.setRole(user.getRole().name());
 		return userDTO;
 	}
+	@Override
+	public User getFullUserByUserName(String userName) {
+	    return userRepository.findById(userName)
+	            .orElseThrow(() -> new UserNotFoundException(userName + " not found"));
+	}
+
 }
